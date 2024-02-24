@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/noteFragment2">
+    <fragment
+        android:id="@+id/noteFragment2"
+        android:name="com.example.optimizingcode.ui.NoteFragment"
+        android:label="NoteFragment" >
+        <action
+            android:id="@+id/action_noteFragment2_to_addEditNoteFragment2"
+            app:destination="@id/addEditNoteFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/addEditNoteFragment2"
+        android:name="com.example.optimizingcode.ui.AddEditNoteFragment"
+        android:label="AddEditNoteFragment" >
+        <action
+            android:id="@+id/action_addEditNoteFragment2_to_noteFragment2"
+            app:destination="@id/noteFragment2" />
+        <argument
+            android:name="note"
+            app:argType="com.example.optimizingcode.data.entity.Note"
+            app:nullable="true" />
+    </fragment>
+</navigation>
