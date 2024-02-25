@@ -72,7 +72,7 @@ class NoteFragment: ThemeFragment()  , NoteAdapter.OnNoteClickListener {
             recyclerView.setHasFixedSize(false)
 
             floatingActionBtn.setOnClickListener(){
-                    val action = NoteFragmentDirections.actionNoteFragment2ToAddEditNoteFragment2(null)
+                    val action = NoteFragmentDirections.actionNoteFragmentToAddEditNoteFragment(null)
                     findNavController().navigate(action)
             }
 
@@ -202,7 +202,7 @@ class NoteFragment: ThemeFragment()  , NoteAdapter.OnNoteClickListener {
 
     // this is used for navigation from one fragment to another fragment
     override fun onNoteClick(note: Note) {
-        val action = NoteFragmentDirections.actionNoteFragment2ToAddEditNoteFragment2(note)
+        val action = NoteFragmentDirections.actionNoteFragmentToAddEditNoteFragment(note)
         findNavController().navigate(action)
     }
 

@@ -79,7 +79,12 @@ class NoteAdapter( private val listener: OnNoteClickListener) :
 //        setAnimation(holder.itemView, position)
 //        setAnimationNew(holder.itemView, position)
 
-        setCustomAnimation(holder.itemView)
+//        val scaleFactor = calculateScaleFactor(position)
+//        holder.itemView.scaleX = scaleFactor
+//        holder.itemView.scaleY = scaleFactor
+
+
+        setAnimationNew(holder.itemView,position)
 
     }
 
@@ -110,4 +115,8 @@ class NoteAdapter( private val listener: OnNoteClickListener) :
         this.notes = notes
         notifyDataSetChanged()
     }
+
+
+
+
 }

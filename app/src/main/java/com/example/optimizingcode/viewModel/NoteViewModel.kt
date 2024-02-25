@@ -42,9 +42,7 @@ class NoteViewModel @Inject constructor(private val noteDao:NoteDao):ViewModel()
     sealed class NotesEvents{
         data class ShowUndoSnackBar(val msg:String,val note:Note):NotesEvents()
 
-        object NavigateToNotesFragments:NotesEvents(
-
-        )
+        object NavigateToNotesFragments:NotesEvents()
     }
 
 

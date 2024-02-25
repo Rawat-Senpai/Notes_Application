@@ -2,22 +2,25 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/noteFragment2">
+    app:startDestination="@id/noteFragment">
     <fragment
-        android:id="@+id/noteFragment2"
+        android:id="@+id/noteFragment"
         android:name="com.example.optimizingcode.ui.NoteFragment"
         android:label="NoteFragment" >
         <action
-            android:id="@+id/action_noteFragment2_to_addEditNoteFragment2"
-            app:destination="@id/addEditNoteFragment2" />
+            android:id="@+id/action_noteFragment_to_addEditNoteFragment"
+            app:destination="@id/addEditNoteFragment" />
     </fragment>
     <fragment
-        android:id="@+id/addEditNoteFragment2"
+        android:id="@+id/addEditNoteFragment"
         android:name="com.example.optimizingcode.ui.AddEditNoteFragment"
         android:label="AddEditNoteFragment" >
         <action
-            android:id="@+id/action_addEditNoteFragment2_to_noteFragment2"
-            app:destination="@id/noteFragment2" />
+            android:id="@+id/action_addEditNoteFragment_to_noteFragment"
+            app:destination="@id/noteFragment"
+            app:popUpToInclusive="true"
+
+            />
         <argument
             android:name="note"
             app:argType="com.example.optimizingcode.data.entity.Note"

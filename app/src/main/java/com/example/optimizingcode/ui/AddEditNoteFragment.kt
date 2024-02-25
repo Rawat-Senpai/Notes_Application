@@ -55,11 +55,16 @@ class AddEditNoteFragment:ThemeFragment() {
                     val updatedNote = note.copy(title = title, content = content, date = System.currentTimeMillis())
                     viewModel.updateNote(updatedNote)
 
+                    val action = AddEditNoteFragmentDirections.actionAddEditNoteFragmentToNoteFragment()
+                    findNavController().navigate(action)
+                    findNavController().popBackStack()
+
                 }
 
                 imageView.setOnClickListener(){
-                    val action = AddEditNoteFragmentDirections.actionAddEditNoteFragment2ToNoteFragment2()
+                    val action = AddEditNoteFragmentDirections.actionAddEditNoteFragmentToNoteFragment()
                     findNavController().navigate(action)
+                    findNavController().popBackStack()
                 }
 
                 menuBtn.visibility=View.VISIBLE
@@ -81,11 +86,17 @@ class AddEditNoteFragment:ThemeFragment() {
 
                     val newNote = Note(title= title, content = content, date = System.currentTimeMillis())
                     viewModel.insertNote(newNote)
+
+                    val action = AddEditNoteFragmentDirections.actionAddEditNoteFragmentToNoteFragment()
+                    findNavController().navigate(action)
+
+
                 }
 
                 imageView.setOnClickListener(){
-                    val action = AddEditNoteFragmentDirections.actionAddEditNoteFragment2ToNoteFragment2()
+                    val action = AddEditNoteFragmentDirections.actionAddEditNoteFragmentToNoteFragment()
                     findNavController().navigate(action)
+
                 }
                 menuBtn.visibility=View.GONE
 
@@ -104,7 +115,7 @@ class AddEditNoteFragment:ThemeFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.notesEvent.collect{event->
                 if(event is NoteViewModel.NotesEvents.NavigateToNotesFragments){
-                    val action = AddEditNoteFragmentDirections.actionAddEditNoteFragment2ToNoteFragment2()
+                    val action = AddEditNoteFragmentDirections.actionAddEditNoteFragmentToNoteFragment()
                     findNavController().navigate(action)
                 }
             }
