@@ -5,6 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.dolatkia.animatedThemeManager.AppTheme
 import com.dolatkia.animatedThemeManager.ThemeActivity
+import com.example.optimizingcode.Utils.AppInfo
 import com.example.optimizingcode.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,7 +19,14 @@ class MainActivity : ThemeActivity() {
     private var fragmentNumber: Int = 0
     lateinit var  navController:NavController
     override fun getStartTheme(): AppTheme {
-        return  LightTheme()
+
+        AppInfo.setContext(this)
+        return if(AppInfo.getGetDarkMode()){
+            DarkTheme()
+        }else {
+            LightTheme()
+        }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

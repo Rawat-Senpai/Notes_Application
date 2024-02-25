@@ -21,13 +21,14 @@
     <color name="darkWhiteIcons">#FFFFFFFF</color>
     <color name="darkMainTextColor">#FFFFFFFF</color>
     <color name="darkSubHeadingColor">#F8F2E5</color>
+    <color name="darkHintColor">#999F9393</color>
 
 
     <!-- light theme -->
     <color name="lightBackground">#FBF0DA</color>
-    <color name="lightWhiteIcons">#FFFFFFFF</color>
+    <color name="lightWhiteIcons">#FF000000</color>
     <color name="lightMainTextColor">#FF000000</color>
     <color name="lightSubHeadingColor">#494747</color>
-
+    <color name="lightHintColor">#6C6C6C</color>
 
 </resources>

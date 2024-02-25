@@ -120,6 +120,15 @@ class AddEditNoteFragment:ThemeFragment() {
         binding.apply {
             background.setBackgroundColor(myAppTheme.backgroundColor(requireContext()))
             imageView.setColorFilter(myAppTheme.changeIconColor(requireContext()))
+            currentDate.setTextColor(myAppTheme.mainTextColor(requireContext()))
+            noteText.setTextColor(myAppTheme.mainTextColor(requireContext()))
+            noteDescription.setTextColor(myAppTheme.mainTextColor(requireContext()))
+            menuBtn.setColorFilter(myAppTheme.changeIconColor(requireContext()))
+
+            noteText.setHintTextColor(myAppTheme.changeTextHintColor(requireContext()))
+            noteDescription.setHintTextColor(myAppTheme.changeTextHintColor(requireContext()))
+
+
         }
 
 

@@ -44,25 +44,25 @@
                     android:layout_marginEnd="10dp"
                     android:visibility="gone"
                     android:src="@drawable/menu"
-                    app:layout_constraintBottom_toBottomOf="@+id/backBtn"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/backBtn" />
+                    app:layout_constraintTop_toTopOf="@+id/imageView" />
 
                 <TextView
                     android:id="@+id/currentDate"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
-                    android:layout_marginTop="20dp"
                     android:padding="5dp"
+                    android:layout_marginTop="15dp"
                     android:textColor="@color/black"
                     android:textSize="13sp"
-                    tools:text="Mar 12 2024"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@+id/bookmark"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/backBtn" />
+                    app:layout_constraintTop_toBottomOf="@+id/imageView"
+                    tools:text="Mar 12 2024" />
 
                 <ImageView
                     android:id="@+id/bookmark"
@@ -84,6 +84,7 @@
                     android:fontFamily="@font/poppins_light"
                     android:hint="Notes heading"
                     android:padding="5dp"
+                    android:letterSpacing="0.05"
                     tools:text="My name is shobhit"
                     android:textColor="@color/black"
                     android:textSize="20sp"
@@ -104,6 +105,7 @@
                     tools:text="Description text for testing perpose"
                     android:minHeight="200dp"
                     android:padding="5dp"
+                    android:letterSpacing="0.05"
                     android:textColor="@color/black"
                     android:textSize="20dp"
                     app:layout_constraintEnd_toEndOf="parent"

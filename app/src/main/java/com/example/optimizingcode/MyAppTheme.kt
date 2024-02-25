@@ -17,5 +17,6 @@ interface MyAppTheme  :AppTheme {
 
     fun changeButtonColor(context: Context):Int
 
+    fun changeTextHintColor(context:Context):Int
 
 }
