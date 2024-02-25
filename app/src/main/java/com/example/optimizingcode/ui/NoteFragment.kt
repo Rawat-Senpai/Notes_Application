@@ -1,5 +1,8 @@
 package com.example.optimizingcode.ui
 
+import android.app.Activity
+
+import android.content.Context
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.Editable
@@ -9,18 +12,25 @@ import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
-import android.widget.GridView
-import android.widget.Toast
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.Fragment
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.dolatkia.animatedThemeManager.AppTheme
+import com.dolatkia.animatedThemeManager.ThemeFragment
+import com.dolatkia.animatedThemeManager.ThemeManager
+import com.example.optimizingcode.DarkTheme
+import com.example.optimizingcode.LightTheme
+
+import com.example.optimizingcode.MyAppTheme
 import com.example.optimizingcode.R
+import com.example.optimizingcode.Utils.AppInfo
 import com.example.optimizingcode.adapters.NoteAdapter
 import com.example.optimizingcode.data.entity.Note
 import com.example.optimizingcode.databinding.DeletePopupBinding
@@ -31,17 +41,31 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+
 @AndroidEntryPoint
-class NoteFragment: Fragment(R.layout.fragment_notes), NoteAdapter.OnNoteClickListener {
+class NoteFragment: ThemeFragment()  , NoteAdapter.OnNoteClickListener {
+
+    var switch =0
+
 
     private val viewModel by viewModels<NoteViewModel>()
     private  lateinit var  binding: FragmentNotesBinding
      private  val myAdapter:NoteAdapter by lazy { NoteAdapter(this@NoteFragment) }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
-        binding = FragmentNotesBinding.bind(requireView())
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        switch = if(AppInfo.getGetDarkMode()){
+            1;
+        }else {
+            0;
+        }
+
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_notes, container, false)
 
         binding.apply {
             recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL )
@@ -85,6 +109,7 @@ class NoteFragment: Fragment(R.layout.fragment_notes), NoteAdapter.OnNoteClickLi
                     val newText = query.toString()
 //                    searchDatabase(newText)
 //                    searchDatabase(newText)
+                    performSearch()
 //                    Toast.makeText(context, "Text changed: $newText", Toast.LENGTH_SHORT).show()
 
 
@@ -96,25 +121,56 @@ class NoteFragment: Fragment(R.layout.fragment_notes), NoteAdapter.OnNoteClickLi
                     // This method is called after the text in the EditText has been changed
 //                    val newText = s.toString()
 //                    searchDatabase(newText)
+//                    performSearch()
 //                    Toast.makeText(context, "Text changed: $newText", Toast.LENGTH_SHORT).show()
                 }
             }
 
-//            searchEdt.addTextChangedListener(textWatcher)
+            searchEdt.addTextChangedListener(textWatcher)
 
             searchEdt.setOnEditorActionListener { _, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH ||
                     event != null && event.action == KeyEvent.ACTION_DOWN &&
                     event.keyCode == KeyEvent.KEYCODE_ENTER
                 ) {
+                    hideKeyboard(requireActivity())
                     // Perform your search function here
-                    performSearch()
+//                    performSearch()
                     return@setOnEditorActionListener true
                 }
                 false
             }
 
+
+
+            imageView.setOnClickListener(){
+                if(switch==0){
+                    switch=1
+                    ThemeManager.instance.changeTheme(DarkTheme(),it,2300)
+                    AppInfo.setDarkMode(true)
+                }else{
+                    switch=0
+                    AppInfo.setDarkMode(false)
+                }
+                ThemeManager.instance.reverseChangeTheme(LightTheme(),it,2300)
+//                binding.text.playAnimation()
+            }
+
         }
+
+        return binding.root
+
+    }
+
+      override fun syncTheme(appTheme: AppTheme) {
+
+       val myAppTheme = appTheme as MyAppTheme
+           binding.apply {
+               background.setBackgroundColor(myAppTheme.backgroundColor(requireContext()))
+               searchEdt.setTextColor(myAppTheme.mainTextColor(requireContext()))
+               imageView.setColorFilter(myAppTheme.changeIconColor(requireContext()))
+               heading.setTextColor(myAppTheme.mainTextColor(requireContext()))
+          }
 
     }
 
@@ -139,39 +195,17 @@ class NoteFragment: Fragment(R.layout.fragment_notes), NoteAdapter.OnNoteClickLi
             }
         }
 
-
-
-
-    }
-    private fun searchDatabase(query:String){
-        val searchQuery = "%$query%"
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.searchDatabase(searchQuery).observe(this@NoteFragment){ list ->
-                list.let {
-
-
-                    val adapter = NoteAdapter( this@NoteFragment)
-                    binding.recyclerView.adapter = adapter
-
-                    Log.d("checkingData",list.toString())
-
-                }
-
-            }
-        }
-
-
-
     }
 
 
 
+    // this is used for navigation from one fragment to another fragment
     override fun onNoteClick(note: Note) {
         val action = NoteFragmentDirections.actionNoteFragment2ToAddEditNoteFragment2(note)
         findNavController().navigate(action)
     }
 
+    // pop up funciton
     override fun onNoteLongClick(note: Note) {
 
 
@@ -213,6 +247,17 @@ class NoteFragment: Fragment(R.layout.fragment_notes), NoteAdapter.OnNoteClickLi
 
 
     }
+
+    // keyboard hiding feature when we click on search button
+    private fun hideKeyboard(activity: Activity) {
+        val view = activity.currentFocus
+        if (view != null) {
+            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
+
 
 
 }
