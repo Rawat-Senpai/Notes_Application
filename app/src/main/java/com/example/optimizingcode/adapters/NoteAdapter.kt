@@ -2,8 +2,11 @@ package com.example.optimizingcode.adapters
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
+import com.example.optimizingcode.R
 import com.example.optimizingcode.Utils.ColorObjects.getRandomColor
 import com.example.optimizingcode.data.entity.Note
 import com.example.optimizingcode.databinding.LayoutNotesBinding
@@ -73,8 +76,35 @@ class NoteAdapter( private val listener: OnNoteClickListener) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(notes[position])
+//        setAnimation(holder.itemView, position)
+//        setAnimationNew(holder.itemView, position)
+
+        setCustomAnimation(holder.itemView)
 
     }
+
+
+    // custom animation
+    private fun setCustomAnimation(viewToAnimate: View) {
+        val animation = AnimationUtils.loadAnimation(viewToAnimate.context, R.anim.custom_animation)
+        viewToAnimate.startAnimation(animation)
+    }
+
+    private fun setAnimationNew(viewToAnimate: View, position: Int) {
+        val animation = if (position % 2 == 0) {
+            AnimationUtils.loadAnimation(viewToAnimate.context, R.anim.slide_in_left)
+        } else {
+            AnimationUtils.loadAnimation(viewToAnimate.context, R.anim.slide_in_right)
+        }
+        viewToAnimate.startAnimation(animation)
+    }
+
+    // animation when the data in recycler View comees from bottom
+    private fun setAnimation(viewToAnimate: View, position: Int) {
+        val animation = AnimationUtils.loadAnimation(viewToAnimate.context, R.anim.slide_in_bottom)
+        viewToAnimate.startAnimation(animation)
+    }
+
 
     fun setData(notes: List<Note>) {
         this.notes = notes
