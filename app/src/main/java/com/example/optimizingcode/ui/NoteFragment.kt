@@ -165,6 +165,7 @@ class NoteFragment: ThemeFragment()  , NoteAdapter.OnNoteClickListener {
       override fun syncTheme(appTheme: AppTheme) {
 
        val myAppTheme = appTheme as MyAppTheme
+
            binding.apply {
                background.setBackgroundColor(myAppTheme.backgroundColor(requireContext()))
                searchEdt.setTextColor(myAppTheme.mainTextColor(requireContext()))
