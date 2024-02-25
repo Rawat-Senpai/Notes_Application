@@ -1,11 +1,18 @@
 package com.example.optimizingcode.ui
 
 import android.os.Bundle
+import android.provider.ContactsContract
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import android.widget.GridView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -27,13 +34,14 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class NoteFragment: Fragment(R.layout.fragment_notes), NoteAdapter.OnNoteClickListener {
 
-    val viewModel by viewModels<NoteViewModel>()
-
+    private val viewModel by viewModels<NoteViewModel>()
+    private  lateinit var  binding: FragmentNotesBinding
+     private  val myAdapter:NoteAdapter by lazy { NoteAdapter(this@NoteFragment) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val binding = FragmentNotesBinding.bind(requireView())
+        binding = FragmentNotesBinding.bind(requireView())
 
         binding.apply {
             recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL )
@@ -46,8 +54,12 @@ class NoteFragment: Fragment(R.layout.fragment_notes), NoteAdapter.OnNoteClickLi
 
             viewLifecycleOwner.lifecycleScope.launch {
                 viewModel.notes.collect{notes->
-                    val adapter = NoteAdapter(notes,this@NoteFragment)
-                    recyclerView.adapter=adapter
+                    Log.d("NoteSize57",notes.size.toString())
+//                    myAdapter = NoteAdapter(this@NoteFragment)
+                    myAdapter.notifyDataSetChanged()
+                    recyclerView.adapter=myAdapter
+
+                    myAdapter.setData(notes)
                 }
             }
 
@@ -63,10 +75,97 @@ class NoteFragment: Fragment(R.layout.fragment_notes), NoteAdapter.OnNoteClickLi
                 }
             }
 
+            val textWatcher = object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // This method is called before the text in the EditText is changed
+                }
+
+                override fun onTextChanged(query: CharSequence?, start: Int, before: Int, count: Int) {
+                    // This method is called when the text in the EditText is changed
+                    val newText = query.toString()
+//                    searchDatabase(newText)
+//                    searchDatabase(newText)
+//                    Toast.makeText(context, "Text changed: $newText", Toast.LENGTH_SHORT).show()
+
+
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    val newText = s.toString()
+//                    searchDatabase(newText)
+                    // This method is called after the text in the EditText has been changed
+//                    val newText = s.toString()
+//                    searchDatabase(newText)
+//                    Toast.makeText(context, "Text changed: $newText", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+//            searchEdt.addTextChangedListener(textWatcher)
+
+            searchEdt.setOnEditorActionListener { _, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                    event != null && event.action == KeyEvent.ACTION_DOWN &&
+                    event.keyCode == KeyEvent.KEYCODE_ENTER
+                ) {
+                    // Perform your search function here
+                    performSearch()
+                    return@setOnEditorActionListener true
+                }
+                false
+            }
 
         }
 
     }
+
+    private fun performSearch() {
+        // Replace this with your search functionality
+        val query = binding.searchEdt.text.toString()
+        val searchQuery = "%$query%"
+
+        viewModel.searchDatabase(searchQuery)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.searchDatabase(searchQuery).observe(viewLifecycleOwner){ list ->
+                list.let {
+
+                    myAdapter.setData(list)
+//                  myAdapter = NoteAdapter( this@NoteFragment)
+//                    binding.recyclerView.adapter = myAdapter
+////                    myAdapter.notifyDataSetChanged()
+//                    Log.d("NoteSize131",list.size.toString())
+
+                }
+
+            }
+        }
+
+
+
+
+    }
+    private fun searchDatabase(query:String){
+        val searchQuery = "%$query%"
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.searchDatabase(searchQuery).observe(this@NoteFragment){ list ->
+                list.let {
+
+
+                    val adapter = NoteAdapter( this@NoteFragment)
+                    binding.recyclerView.adapter = adapter
+
+                    Log.d("checkingData",list.toString())
+
+                }
+
+            }
+        }
+
+
+
+    }
+
+
 
     override fun onNoteClick(note: Note) {
         val action = NoteFragmentDirections.actionNoteFragment2ToAddEditNoteFragment2(note)

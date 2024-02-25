@@ -10,88 +10,77 @@ import com.example.optimizingcode.ColorObjects.getRandomColor
 import com.example.optimizingcode.data.entity.Note
 import com.example.optimizingcode.databinding.LayoutNotesBinding
 import java.text.SimpleDateFormat
+import kotlin.math.log
 
 
+class NoteAdapter( private val listener: OnNoteClickListener) :
+    RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
 
-class NoteAdapter(private  val notes:List<Note>, private val listener:OnNoteClickListener) : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
-
+    private var notes =emptyList<Note>()
 
     interface OnNoteClickListener {
-        fun onNoteClick(note:Note)
-
-        fun onNoteLongClick(note:Note)
+        fun onNoteClick(note: Note)
+        fun onNoteLongClick(note: Note)
     }
 
-
-
-    inner  class ViewHolder(private val binding: LayoutNotesBinding ,val context:Context ): RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: LayoutNotesBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.apply {
-                root.setOnClickListener(){
 
+            Log.d("NoteSize",notes.size.toString())
 
-
-
-                    val position = adapterPosition
-                    if(position != RecyclerView.NO_POSITION)
-                    {
-                        val note = notes[position]
-                        listener.onNoteClick(note)
-                    }
-
+            binding.root.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val note = notes[position]
+                    listener.onNoteClick(note)
                 }
+            }
 
-
-                root.setOnLongClickListener {
-                    val position = adapterPosition
-                    if(position != RecyclerView.NO_POSITION) {
-                        val note = notes[position]
-                        listener.onNoteLongClick(note)
-                    }
-
-                    true
+            binding.root.setOnLongClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val note = notes[position]
+                    listener.onNoteLongClick(note)
+                    return@setOnLongClickListener true
                 }
-
-
-
+                return@setOnLongClickListener false
             }
         }
 
-
-        fun bind(note:Note){
+        fun bind(note: Note) {
             binding.apply {
                 titleNote.text = note.title
-                val formatter = SimpleDateFormat("dd.mm.yyyy")
+                val formatter = SimpleDateFormat("dd.MM.yyyy")
                 date.text = formatter.format(note.date)
                 noteDescription.text = note.content
 
-                val randomColor = getRandomColor(context)
-//                Log.d("NoteAdapter", "Random color: $randomColor")
-//                cardView.setBackgroundColor(randomColor)
+                val randomColor = getRandomColor(itemView.context)
                 bookmark.setColorFilter(randomColor)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = LayoutNotesBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-        return ViewHolder(binding,parent.context)
+        val binding =
+            LayoutNotesBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
-    override fun getItemCount(): Int {
-        return notes.size
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
+
+    override fun getItemCount(): Int = notes.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        with(notes[position]){
-            holder.bind(this)
+        holder.bind(notes[position])
 
+    }
 
-
-        }
-
-
-
+    fun setData(notes: List<Note>) {
+        this.notes = notes
+        notifyDataSetChanged()
     }
 }

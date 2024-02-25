@@ -1,7 +1,9 @@
 package com.example.optimizingcode.viewModel
 
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.optimizingcode.data.dao.NoteDao
 import com.example.optimizingcode.data.entity.Note
@@ -31,6 +33,10 @@ class NoteViewModel @Inject constructor(private val noteDao:NoteDao):ViewModel()
     fun deleteNote(note:Note) = viewModelScope.launch {
         noteDao.deleteNote(note)
         notesChannel.send(NotesEvents.ShowUndoSnackBar("Note Deleted Successfully",note))
+    }
+
+    fun searchDatabase(searchQuery:String): LiveData<List<Note>>{
+        return noteDao.searchInDatabase(searchQuery = searchQuery).asLiveData()
     }
 
     sealed class NotesEvents{
