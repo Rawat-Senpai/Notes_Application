@@ -4,13 +4,18 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.dolatkia.animatedThemeManager.AppTheme
+import com.dolatkia.animatedThemeManager.ThemeFragment
+import com.example.optimizingcode.MyAppTheme
 import com.example.optimizingcode.R
 import com.example.optimizingcode.data.entity.Note
 import com.example.optimizingcode.databinding.DeletePopupBinding
@@ -21,15 +26,19 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
 @AndroidEntryPoint
-class AddEditNoteFragment:Fragment(R.layout.fragment_add_edit_notes) {
+class AddEditNoteFragment:ThemeFragment() {
 
-    val viewModel by viewModels<NoteViewModel>()
+    private val viewModel by viewModels<NoteViewModel>()
+    private lateinit var binding:FragmentAddEditNotesBinding
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
+        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_add_edit_notes, container, false)
 
-        val binding = FragmentAddEditNotesBinding.bind(requireView())
         val args:AddEditNoteFragmentArgs by navArgs()
 
         val note = args.note
@@ -48,7 +57,7 @@ class AddEditNoteFragment:Fragment(R.layout.fragment_add_edit_notes) {
 
                 }
 
-                backBtn.setOnClickListener(){
+                imageView.setOnClickListener(){
                     val action = AddEditNoteFragmentDirections.actionAddEditNoteFragment2ToNoteFragment2()
                     findNavController().navigate(action)
                 }
@@ -74,7 +83,7 @@ class AddEditNoteFragment:Fragment(R.layout.fragment_add_edit_notes) {
                     viewModel.insertNote(newNote)
                 }
 
-                backBtn.setOnClickListener(){
+                imageView.setOnClickListener(){
                     val action = AddEditNoteFragmentDirections.actionAddEditNoteFragment2ToNoteFragment2()
                     findNavController().navigate(action)
                 }
@@ -100,6 +109,19 @@ class AddEditNoteFragment:Fragment(R.layout.fragment_add_edit_notes) {
                 }
             }
         }
+
+
+        return binding.root
+    }
+
+    override fun syncTheme(appTheme: AppTheme) {
+        val myAppTheme = appTheme as MyAppTheme
+
+        binding.apply {
+            background.setBackgroundColor(myAppTheme.backgroundColor(requireContext()))
+            imageView.setColorFilter(myAppTheme.changeIconColor(requireContext()))
+        }
+
 
     }
 

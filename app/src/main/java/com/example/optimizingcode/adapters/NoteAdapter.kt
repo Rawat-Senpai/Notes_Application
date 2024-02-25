@@ -1,16 +1,13 @@
 package com.example.optimizingcode.adapters
 
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.optimizingcode.ColorObjects.getRandomColor
+import com.example.optimizingcode.Utils.ColorObjects.getRandomColor
 import com.example.optimizingcode.data.entity.Note
 import com.example.optimizingcode.databinding.LayoutNotesBinding
 import java.text.SimpleDateFormat
-import kotlin.math.log
 
 
 class NoteAdapter( private val listener: OnNoteClickListener) :

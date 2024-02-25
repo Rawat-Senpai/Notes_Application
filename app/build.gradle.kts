@@ -77,6 +77,8 @@ dependencies {
     // view model
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
 
+    implementation ("com.dolatkia:animated-theme-manager:1.1.4")
+
 
 //    val nav_version = "2.7.7"
 //    implementation("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")

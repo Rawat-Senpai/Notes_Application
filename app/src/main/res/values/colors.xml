@@ -12,4 +12,22 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="grey">#494747</color>
 
+
+
+
+
+    <!--   dark theme  -->
+    <color name="darkBackground">#1B1B1C</color>
+    <color name="darkWhiteIcons">#FFFFFFFF</color>
+    <color name="darkMainTextColor">#FFFFFFFF</color>
+    <color name="darkSubHeadingColor">#F8F2E5</color>
+
+
+    <!-- light theme -->
+    <color name="lightBackground">#FBF0DA</color>
+    <color name="lightWhiteIcons">#FFFFFFFF</color>
+    <color name="lightMainTextColor">#FF000000</color>
+    <color name="lightSubHeadingColor">#494747</color>
+
+
 </resources>

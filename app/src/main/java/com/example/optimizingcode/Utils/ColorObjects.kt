@@ -1,7 +1,8 @@
-package com.example.optimizingcode
+package com.example.optimizingcode.Utils
 
 import android.content.Context
 import androidx.core.content.ContextCompat
+import com.example.optimizingcode.R
 
 
 object ColorObjects {
