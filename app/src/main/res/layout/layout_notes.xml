@@ -14,7 +14,6 @@
         android:padding="5dp"
         android:id="@+id/cardView"
         android:layout_width="match_parent"
-
         android:layout_height="match_parent">
 
         <TextView
@@ -36,7 +35,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:src="@drawable/ic_bookmark"
-
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/titleNote" />
 
@@ -63,10 +62,12 @@
             android:fontFamily="@font/poppins_medium"
             android:minHeight="50dp"
             android:textColor="@color/grey"
-            android:textSize="14sp"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
+            tools:text="Chekcing description of the text "
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/date"
             app:layout_constraintVertical_bias="0.0" />

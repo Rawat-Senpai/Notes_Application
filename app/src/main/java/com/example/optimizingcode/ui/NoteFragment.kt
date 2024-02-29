@@ -176,6 +176,14 @@ class NoteFragment : ThemeFragment(), NoteAdapter.OnNoteClickListener {
     }
 
 
+    override fun onResume() {
+        super.onResume()
+
+        Log.d("checking","On-Resume")
+
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -199,6 +207,7 @@ class NoteFragment : ThemeFragment(), NoteAdapter.OnNoteClickListener {
             searchEdt.setTextColor(myAppTheme.mainTextColor(requireContext()))
             imageView.setColorFilter(myAppTheme.changeIconColor(requireContext()))
             heading.setTextColor(myAppTheme.mainTextColor(requireContext()))
+
 
         }
 
