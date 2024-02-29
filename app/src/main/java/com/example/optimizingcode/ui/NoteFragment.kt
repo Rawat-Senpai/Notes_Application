@@ -32,6 +32,7 @@ import com.example.optimizingcode.MyAppTheme
 import com.example.optimizingcode.R
 import com.example.optimizingcode.Utils.AppInfo
 import com.example.optimizingcode.adapters.NoteAdapter
+import com.example.optimizingcode.adapters.NoteListAdapter
 import com.example.optimizingcode.data.entity.Note
 import com.example.optimizingcode.databinding.DeletePopupBinding
 import com.example.optimizingcode.databinding.FragmentNotesBinding
@@ -43,15 +44,15 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class NoteFragment: ThemeFragment()  , NoteAdapter.OnNoteClickListener {
+class NoteFragment : ThemeFragment(), NoteAdapter.OnNoteClickListener {
 
-    var switch =0
+    var switch = 0
 
 
     private val viewModel by viewModels<NoteViewModel>()
-    private  lateinit var  binding: FragmentNotesBinding
-     private  val myAdapter:NoteAdapter by lazy { NoteAdapter(this@NoteFragment) }
-
+    private lateinit var binding: FragmentNotesBinding
+    private val myAdapter: NoteAdapter by lazy { NoteAdapter(this@NoteFragment) }
+    private  val adapter:NoteListAdapter by lazy { NoteListAdapter(this@NoteFragment) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,52 +60,64 @@ class NoteFragment: ThemeFragment()  , NoteAdapter.OnNoteClickListener {
         savedInstanceState: Bundle?
     ): View? {
 
-        switch = if(AppInfo.getGetDarkMode()){
+        switch = if (AppInfo.getGetDarkMode()) {
             1;
-        }else {
+        } else {
             0;
         }
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_notes, container, false)
 
         binding.apply {
-            recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL )
-            recyclerView.setHasFixedSize(false)
 
-            floatingActionBtn.setOnClickListener(){
-                    val action = NoteFragmentDirections.actionNoteFragmentToAddEditNoteFragment(null)
-                    findNavController().navigate(action)
+
+            floatingActionBtn.setOnClickListener() {
+                val action = NoteFragmentDirections.actionNoteFragmentToAddEditNoteFragment(null)
+                findNavController().navigate(action)
             }
 
             viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.notes.collect{notes->
-                    Log.d("NoteSize57",notes.size.toString())
+                viewModel.notes.collect { notes ->
+                    Log.d("NoteSize57", notes.size.toString())
 //                    myAdapter = NoteAdapter(this@NoteFragment)
-                    myAdapter.notifyDataSetChanged()
-                    recyclerView.adapter=myAdapter
+//                    myAdapter.notifyDataSetChanged()
+//                    recyclerView.adapter = myAdapter
+//
+//                    myAdapter.setData(notes)
+                    adapter.submitList(notes)
 
-                    myAdapter.setData(notes)
                 }
             }
 
             viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.notesEvent.collect{event->
+                viewModel.notesEvent.collect { event ->
 
-                    if(event is NoteViewModel.NotesEvents.ShowUndoSnackBar){
-                        Snackbar.make(requireView(), event.msg, Snackbar.LENGTH_LONG).setAction("Undo"){
-                            viewModel.insertNote(event.note)
-                        }.show()
+                    if (event is NoteViewModel.NotesEvents.ShowUndoSnackBar) {
+                        Snackbar.make(requireView(), event.msg, Snackbar.LENGTH_LONG)
+                            .setAction("Undo") {
+                                viewModel.insertNote(event.note)
+                            }.show()
                     }
 
                 }
             }
 
             val textWatcher = object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
                     // This method is called before the text in the EditText is changed
                 }
 
-                override fun onTextChanged(query: CharSequence?, start: Int, before: Int, count: Int) {
+                override fun onTextChanged(
+                    query: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int
+                ) {
                     // This method is called when the text in the EditText is changed
                     val newText = query.toString()
 //                    searchDatabase(newText)
@@ -143,16 +156,16 @@ class NoteFragment: ThemeFragment()  , NoteAdapter.OnNoteClickListener {
 
 
 
-            imageView.setOnClickListener(){
-                if(switch==0){
-                    switch=1
-                    ThemeManager.instance.changeTheme(DarkTheme(),it,2300)
+            imageView.setOnClickListener() {
+                if (switch == 0) {
+                    switch = 1
+                    ThemeManager.instance.changeTheme(DarkTheme(), it, 2300)
                     AppInfo.setDarkMode(true)
-                }else{
-                    switch=0
+                } else {
+                    switch = 0
                     AppInfo.setDarkMode(false)
                 }
-                ThemeManager.instance.reverseChangeTheme(LightTheme(),it,2300)
+                ThemeManager.instance.reverseChangeTheme(LightTheme(), it, 2300)
 //                binding.text.playAnimation()
             }
 
@@ -162,16 +175,32 @@ class NoteFragment: ThemeFragment()  , NoteAdapter.OnNoteClickListener {
 
     }
 
-      override fun syncTheme(appTheme: AppTheme) {
 
-       val myAppTheme = appTheme as MyAppTheme
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-           binding.apply {
-               background.setBackgroundColor(myAppTheme.backgroundColor(requireContext()))
-               searchEdt.setTextColor(myAppTheme.mainTextColor(requireContext()))
-               imageView.setColorFilter(myAppTheme.changeIconColor(requireContext()))
-               heading.setTextColor(myAppTheme.mainTextColor(requireContext()))
-          }
+        binding.apply {
+
+            recyclerView.layoutManager =StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            recyclerView.setHasFixedSize(false)
+            recyclerView.adapter=adapter
+
+        }
+
+
+    }
+
+    override fun syncTheme(appTheme: AppTheme) {
+
+        val myAppTheme = appTheme as MyAppTheme
+
+        binding.apply {
+            background.setBackgroundColor(myAppTheme.backgroundColor(requireContext()))
+            searchEdt.setTextColor(myAppTheme.mainTextColor(requireContext()))
+            imageView.setColorFilter(myAppTheme.changeIconColor(requireContext()))
+            heading.setTextColor(myAppTheme.mainTextColor(requireContext()))
+
+        }
 
     }
 
@@ -182,10 +211,12 @@ class NoteFragment: ThemeFragment()  , NoteAdapter.OnNoteClickListener {
 
         viewModel.searchDatabase(searchQuery)
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.searchDatabase(searchQuery).observe(viewLifecycleOwner){ list ->
+            viewModel.searchDatabase(searchQuery).observe(viewLifecycleOwner) { list ->
                 list.let {
 
-                    myAdapter.setData(list)
+                    adapter.submitList(list)
+
+//                    myAdapter.setData(list)
 //                  myAdapter = NoteAdapter( this@NoteFragment)
 //                    binding.recyclerView.adapter = myAdapter
 ////                    myAdapter.notifyDataSetChanged()
@@ -197,7 +228,6 @@ class NoteFragment: ThemeFragment()  , NoteAdapter.OnNoteClickListener {
         }
 
     }
-
 
 
     // this is used for navigation from one fragment to another fragment
@@ -243,10 +273,6 @@ class NoteFragment: ThemeFragment()  , NoteAdapter.OnNoteClickListener {
         builder.setCancelable(true)
 
 
-
-
-
-
     }
 
     // keyboard hiding feature when we click on search button
@@ -257,8 +283,6 @@ class NoteFragment: ThemeFragment()  , NoteAdapter.OnNoteClickListener {
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
-
-
 
 
 }

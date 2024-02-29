@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.example.optimizingcode.R
@@ -89,7 +90,7 @@ class NoteAdapter( private val listener: OnNoteClickListener) :
     }
 
 
-    // custom animation
+
     private fun setCustomAnimation(viewToAnimate: View) {
         val animation = AnimationUtils.loadAnimation(viewToAnimate.context, R.anim.custom_animation)
         viewToAnimate.startAnimation(animation)
